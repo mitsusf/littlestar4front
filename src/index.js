@@ -1,12 +1,36 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+// State management
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createLogger } from 'redux-logger';
+// thunk returns function 
+import thunkMiddleware from 'redux-thunk';  
+
+// Reducer related
+import { searchStars, requestStars } from "./reducers"
+
+// Components
+import App from './containers/App';
+
+// Styles etc
 import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import 'tachyons';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// TBD
+import * as serviceWorker from './serviceWorker';   // For offline
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
+const logger = createLogger();
+const rootReducer = combineReducers({ searchStars, requestStars }); 
+
+const store = createStore(rootReducer, applyMiddleware(thunkMiddleware, logger)); 
+
+ReactDOM.render(
+    <Provider store={store}>
+        <App />
+    </Provider>, 
+    document.getElementById('root'));
+
+
 serviceWorker.unregister();
